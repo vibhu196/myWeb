@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games Listing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: url('https://source.unsplash.com/1920x1080/?sports,stadium') no-repeat center center/cover;
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        header {
+            background: rgba(235, 72, 23, 0.9);
+            color: white;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px black;
+        }
+
+        .slider-container {
+            max-width: 90%;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+            color: black;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .game-card img {
+            width: 100%;
+            border-radius: 10px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .game-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #a14f77;
+            margin-top: 10px;
+        }
+
+        .game-desc {
+            font-size: 16px;
+            color: #444;
+            margin-top: 5px;
+        }
+
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 50%;
+        }
+
+        .prev { left: 10px; }
+        .next { right: 10px; }
+
+        .prev:hover, .next:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+    </style>
+</head>
+<body>
+
+<header>Explore Exciting Games</header>
+
+<!-- Slider Section -->
+<div class="slider-container">
+    <div class="slider">
+        <div class="slide"><img src="https://source.unsplash.com/1920x1080/?cricket" alt="Cricket"></div>
+        <div class="slide"><img src="https://source.unsplash.com/1920x1080/?football" alt="Football"></div>
+        <div class="slide"><img src="https://source.unsplash.com/1920x1080/?basketball" alt="Basketball"></div>
+    </div>
+    <button class="prev" onclick="moveSlide(-1)">❮</button>
+    <button class="next" onclick="moveSlide(1)">❯</button>
+</div>
+
+<!-- Games List -->
+<div class="game-list">
+    <div class="game-card">
+        <img src="https://source.unsplash.com/400x300/?cricket" alt="Cricket">
+        <div class="game-title">Cricket</div>
+        <div class="game-desc">Experience the thrill of cricket with your team!</div>
+    </div>
+
+    <div class="game-card">
+        <img src="https://source.unsplash.com/400x300/?football" alt="Football">
+        <div class="game-title">Football</div>
+        <div class="game-desc">Join an intense match and score amazing goals.</div>
+    </div>
+
+    <div class="game-card">
+        <img src="https://source.unsplash.com/400x300/?basketball" alt="Basketball">
+        <div class="game-title">Basketball</div>
+        <div class="game-desc">Show off your skills on the basketball court!</div>
+    </div>
+
+    <div class="game-card">
+        <img src="https://source.unsplash.com/400x300/?badminton" alt="Badminton">
+        <div class="game-title">Badminton</div>
+        <div class="game-desc">Smash your way to victory in badminton.</div>
+    </div>
+
+    <div class="game-card">
+        <img src="https://source.unsplash.com/400x300/?hockey" alt="Hockey">
+        <div class="game-title">Hockey</div>
+        <div class="game-desc">Enjoy the fast-paced action of hockey.</div>
+    </div>
+</div>
+
+<script>
+    let currentIndex = 0;
+
+    function moveSlide(direction) {
+        const slides = document.querySelectorAll('.slide');
+        currentIndex += direction;
+        
+        if (currentIndex < 0) currentIndex = slides.length - 1;
+        if (currentIndex >= slides.length) currentIndex = 0;
+
+        document.querySelector('.slider').style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+
+    setInterval(() => moveSlide(1), 3000); // Auto-slide every 3 seconds
+</script>
+
+</body>
+</html>

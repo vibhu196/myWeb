@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #ffe599;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header {
+            background: #eb4817;
+            color: white;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .content {
+            margin-top: 50px;
+        }
+
+        p {
+            font-size: 22px;
+            color: #ff3366;
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .buttons button {
+            background: #a14f77;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .buttons button:hover {
+            background: #10e7e7;
+            transform: translateY(-3px);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .buttons button {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Welcome to Our Website
+</header>
+
+<div class="content">
+    <p>Welcome to our platform! Here you can register for events, login, and access the admin panel.</p>
+    <div class="buttons">
+        <button onclick="window.location.href='register.html'">Register</button>
+        <button onclick="window.location.href='user-login.html'">User Login</button>
+        <button onclick="window.location.href='admin-login.html'">Admin Login</button>
+    </div>
+</div>
+
+</body>
+</html>

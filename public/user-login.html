@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffe599;
+            text-align: center;
+        }
+        header {
+            background-color: #eb4817;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #eb4817;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .login-btn {
+            background-color: #a14f77;
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .login-btn:hover {
+            background-color: #10e7e7;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>User Login</h1>
+</header>
+
+<div class="container">
+    <h2>Login to Your Account</h2>
+    <p id="error-message" style="color: red;"></p>
+
+    <form id="loginForm" action="/login" method="post">
+        <input type="text" name="whatsapp" id="whatsapp" placeholder="WhatsApp Number" ><br>
+        <input type="date" name="dob" id="dob" placeholder="Date of Birth" ><br>
+        <button class="login-btn" type="submit">Login</button>
+    </form>
+    <p id="message" class=""></p>
+</div>
+
+<!-- <script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent form from refreshing the page
+        const whatsapp = document.getElementById("whatsapp").value.trim();
+        const dob = document.getElementById("dob").value;
+        const messageEl = document.getElementById("message");
+        console.log(whatsapp,'<====messageEl');
+        console.log(dob,'<====dob');
+        
+        if (!whatsapp || !dob) {
+            messageEl.textContent = "Please enter both WhatsApp number and DOB.";
+            messageEl.className = "error";
+            return;
+        }
+        fetch("/login", { // Replace with your actual backend URL
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: { whatsapp, dob }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data,'<===0-0-0-0');
+            
+            if (data.message === "Login successful!") {
+                messageEl.textContent = "Login successful!";
+                messageEl.className = "success";
+                console.log("User Data:", data.user);
+                window.location.href = "games.html"; // Change to your actual page
+                // Redirect to another page if needed: window.location.href = "dashboard.html";
+            } else {
+                messageEl.textContent = "Invalid WhatsApp number or DOB!";
+                messageEl.className = "error";
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            messageEl.textContent = "Something went wrong. Please try again!";
+            messageEl.className = "error";
+        });
+    });
+</script> -->
+
+
+<script>
+    function checkErrorMessage() {
+        fetch("/get-error-message")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("error-message").innerText = data.error;
+                }
+            });
+    }
+    checkErrorMessage()
+</script>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #ffe599;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h2 {
+            background: #eb4817;
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            font-size: 24px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+            margin-top: 10px;
+            color: #a14f77;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 5px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #eb4817;
+        }
+
+        .next-btn {
+            background: #eb4817;
+            color: white;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 6px;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .next-btn:hover {
+            background: #c73b14;
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Registration Page - Step 1</h2>
+    <p>Please enter your details below to proceed:</p>
+    <form  method="post" action="/queue/info">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your full name"   >
+
+        <label for="whatsapp">WhatsApp Number:</label>
+        <input type="text" id="whatsapp" name="whatsapp" placeholder="Enter your WhatsApp number"   >
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob"   >
+
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" placeholder="Enter your city"   >
+
+        <label for="tshirt_size">T-Shirt Size:</label>
+        <select id="tshirt_size" name="tshirt_size">
+            <option value="">Select size</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+        </select>
+
+        <label for="shorts_size">Shorts Size:</label>
+        <select id="shorts_size" name="shorts_size">
+            <option value="">Select size</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+        </select>
+
+        <label for="food_pref">Food Preference:</label>
+        <select id="food_pref" name="food_pref">
+            <option value="">Select preference</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Non-Vegetarian">Non-Vegetarian</option>
+            <option value="Vegan">Vegan</option>
+        </select>
+
+        <label for="stay">Stay   :</label>
+        <select id="stay" name="stay">
+            <option value="">Select option</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+
+        <!-- <button class="next-btn" onclick="window.location.href='registration2.html'">Next</button>/ -->
+        <button class="next-btn" >Next</button>
+
+    </form>
+</div>
+
+</body>
+</html>

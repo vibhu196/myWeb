@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffe599;
+            text-align: center;
+        }
+        header {
+            background-color: #eb4817;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #a14f77;
+            color: white;
+        }
+        .logout-btn {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            background: #eb4817;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .logout-btn:hover {
+            background: #c73b14;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Admin Dashboard</h1>
+</header>
+
+<div class="container">
+    <h2>List of Users</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>WhatsApp Number</th>
+                <th>Date of Birth</th>
+                <th>City</th>
+                <th>Food</th>
+                <th>Short Size</th>
+                <th>T-Shirt Size</th>
+                <th>Stay</th>
+                <th>Partner-1</th>
+                <th>Partner-2</th>
+                <th>Event-1</th>
+                <th>Event-2</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<script>
+    function fetchUsers() {
+        fetch("/admin/users")
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById("userTableBody");
+                tableBody.innerHTML = ""; // Clear existing data
+                console.log(data,'<=-=-data');
+                
+                data.forEach((user, index) => {
+                    const row = `<tr>
+                        <td>${index + 1}</td>
+                        <td>${user.name}</td>
+                        <td>${user.whatsapp}</td>
+                        <td>${user.dob}</td>
+                        <td>${user.city}</td>
+                        <td>${user.food_pref}</td>
+                        <td>${user.shorts_size}</td>
+                        <td>${user.tshirt_size}</td>
+                        <td>${user.stay}</td>
+                        <td>${user.event1}</td>
+                        <td>${user.event2}</td>
+                        <td>${user.partner1}</td>
+                        <td>${user.partner2}</td>
+                      
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error("Error fetching users:", error));
+    }
+
+    function logout() {
+        fetch("/admin/logout", { method: "POST" })
+            .then(() => window.location.href = "/admin-login.html"); // Redirect to login page
+    }
+
+    fetchUsers(); // Load users when the page loads
+</script>
+
+</body>
+</html>
