@@ -3,7 +3,7 @@ const path = require('path');
 
 const app = express();
 const PORT = 3000;
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const { log } = require('console');
 const session = require('express-session');
 
@@ -21,10 +21,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASS || "",
-  database: process.env.DB_NAME || "my_games",
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "my_games"
 });
 
 db.connect((err) => {
