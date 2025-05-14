@@ -118,7 +118,12 @@
 </head>
 <body>
 
-<header>Explore Exciting Games</header>
+<header>Explore Exciting Games  
+
+    <a href="/register.html" id="edit-profile-link" class="edit-profile">
+        Edit Profile <i class="fas fa-user-edit"></i>
+      </a>
+</header>
 
 <!-- Slider Section -->
 <div class="slider-container">
@@ -178,6 +183,16 @@
     }
 
     setInterval(() => moveSlide(1), 3000); // Auto-slide every 3 seconds
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("id");
+    
+    if (userId) {
+        // Find the "Edit Profile" link
+        const editProfileLink = document.getElementById('edit-profile-link');
+        
+        // Set the href attribute with the user_id in the URL
+        editProfileLink.href = `/register.html?id=${userId}`;
+    }
 </script>
 
 </body>

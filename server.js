@@ -49,32 +49,59 @@ const getUsers = () => {
 
 app.post('/queue/info', async (req, res) => {
   try {
-
-    const { name, whatsapp, dob, city, tshirt_size, shorts_size, food_pref, stay } = req.body;
-
-    queueData.push({ name, whatsapp, dob, city, tshirt_size, shorts_size, food_pref, stay });
-
-
-    res.redirect('/registration2.html'); // Redirect after processing
+    const { name, whatsapp, dob, city, tshirt_size, shorts_size, food_pref, stay,user_id } = req.body;
+    queueData.push({ name, whatsapp, dob, city, tshirt_size, shorts_size, food_pref, stay,user_id });
+    if(user_id == null ){
+      res.redirect('/registration2.html');
+    }else{
+      res.redirect(`/registration2.html?id=${user_id}`); 
+    }
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ message: "Database error" });
   }
 });
 
-app.get('/getUserData', (req, res) => {
-  const query = "SELECT * FROM users"; // Fetch all users
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ message: "Database error" });
+app.get(`/getUserData/:isEditSection?`, (req, res) => {
+  
+    query1 = `SELECT * FROM users u
+    WHERE u.id NOT IN (
+      SELECT opponent_id FROM Partner_1
+    );`;
+
+  query2 = `SELECT * FROM users u
+    WHERE u.id NOT IN (
+      SELECT opponent_id FROM Partner_2
+    );`;
+
+    query3 = `SELECT * FROM users ;`;
+
+  db.query(query1, (err1, results1) => {
+    if (err1) {
+      console.error("Database error (query1):", err1);
+      return res.status(500).json({ message: "Database error (Partner_1)" });
     }
 
-    if (!results || results.length === 0) {
-      return res.status(404).json({ message: "No users found" });
+  db.query(query2, (err2, results2) => {
+    if (err2) {
+      console.error("Database error (query2):", err2);
+      return res.status(500).json({ message: "Database error (Partner_2)" });
     }
 
-    res.json(results); // Send the retrieved user data
+    db.query(query3, (err2, results3) => {
+      if (err2) {
+        console.error("Database error (query2):", err2);
+        return res.status(500).json({ message: "Database error (Partner_2)" });
+      }
+
+    res.json({
+      notInPartner1: results1,
+      notInPartner2: results2,
+      allUsers: results3
+    });
+    });
+  });
+
   });
 });
 
@@ -84,36 +111,64 @@ app.get('/getUserData', (req, res) => {
 
 // Handle form submission
 app.post('/submit', (req, res) => {
-  // console.log('req.body');
-  // console.log(req.body);
-
+  console.log('req.body',req.body);
   
-  const { event1, partner1, event2, partner2 } = req.body;
-  queueData.push({ event1, partner1, event2, partner2 });
+ 
+  const { event1, partner1, event2, partner2,user_id } = req.body;
+
+  queueData.push({ event1, partner1, event2, partner2,user_id });
+  
+
   const mergedData = Object.assign({}, ...queueData);
 
-console.log(mergedData);
-
-
-const query = `INSERT INTO users 
-  (name, whatsapp, dob, city, tshirt_size, shorts_size, food_pref, stay, event1, partner1, event2, partner2, created_at) 
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
-
-db.query(query, [
-  mergedData.name, mergedData.whatsapp, mergedData.dob, mergedData.city, 
-  mergedData.tshirt_size, mergedData.shorts_size, mergedData.food_pref, mergedData.stay, 
-  mergedData.event1, mergedData.partner1, mergedData.event2, mergedData.partner2
-], (err, result) => {
-  if (err) {
-    console.error("Error inserting data:", err);
-    return res.status(500).json({ message: "Database error" });
+  console.log('queueData',queueData);
+  
+  if(mergedData.user_id){
+     upddateUser(queueData);
+    return res.redirect('/index.html');
   }
-  res.redirect('/index.html');
-  // res.status(201).json({ message: "User added successfully", id: result.insertId });
+  const userInsertQuery = `
+    INSERT INTO users 
+    (name, whatsapp, dob, city, tshirt_size, shorts_size, food_pref, stay, event1, partner1, event2, partner2, created_at) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+  `;
 
-});
 
+  const userValues = [
+    mergedData.name, mergedData.whatsapp, mergedData.dob, mergedData.city, 
+    mergedData.tshirt_size, mergedData.shorts_size, mergedData.food_pref, mergedData.stay, 
+    mergedData.event1, mergedData.partner1, mergedData.event2, mergedData.partner2
+  ];
 
+  db.query(userInsertQuery, userValues, (err, result) => {
+    if (err) {
+      console.error("Error inserting user:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    const userId = result.insertId;
+
+    // Insert into Partner_1
+    const partner1Query = `INSERT INTO Partner_1 (user_id, opponent_id, event_name) VALUES (?, ?, ?)`;
+    db.query(partner1Query, [userId, partner1, event1], (err1) => {
+      if (err1) {
+        console.error("Error inserting into Partner_1:", err1);
+        return res.status(500).json({ message: "Error inserting into Partner_1" });
+      }
+
+      // Insert into Partner_2
+      const partner2Query = `INSERT INTO Partner_2 (user_id, opponent_id, event_name) VALUES (?, ?, ?)`;
+      db.query(partner2Query, [userId, partner2, event2], (err2) => {
+        if (err2) {
+          console.error("Error inserting into Partner_2:", err2);
+          return res.status(500).json({ message: "Error inserting into Partner_2" });
+        }
+
+        res.redirect('/index.html');
+        // res.status(201).json({ message: "User and partners added successfully" });
+      });
+    });
+  });
 });
 
 
@@ -161,6 +216,7 @@ app.post("/login",async  (req, res) => {
         return res.redirect("/user-login.html");
       }
       if (results.length > 0) {
+        req.session.user = results[0];
         res.redirect('/user/dashboard'); // Redirect after processing
       } else {
         req.session.error = "Invalid WhatsApp number or DOB!";
@@ -170,8 +226,35 @@ app.post("/login",async  (req, res) => {
 
 });
 
+//edit profile
+app.get("/edit-profile/:id", (req, res) => {
+  const userId = req.params.id;
+
+  const sql = `
+    SELECT u.*,p1.user_id as p1_user , p1.event_name as p1_event ,p1.opponent_id as p1_opponent_id , p2.opponent_id as p2_opponent_id , p2.event_name as p2_event , p2.user_id as p2_user_id FROM users u
+    LEFT JOIN partner_1 p1 ON p1.user_id = u.id
+    LEFT JOIN partner_2 p2 ON p2.user_id = u.id
+    WHERE u.id = ?`;
+
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user: results[0] });
+  });
+});
+
+
 app.get("/user/dashboard",  (req, res) => {
-  res.redirect('/games.html'); // Redirect after processing
+  const user = req.session.user;
+
+  res.redirect(`/games.html?id=${user.id}`); // Redirect after processing
 });
 
 // Start the server
@@ -211,7 +294,7 @@ app.post("/login", (req, res) => {
 
       // Clear the session error on successful login
       req.session.error = null;
-      res.redirect("/dashboard"); // Redirect to dashboard after success
+      // res.redirect("/dashboard"); // Redirect to dashboard after success
   });
 });
 // Admin Login API
@@ -237,7 +320,27 @@ app.get("/admin/users", (req, res) => {
     return res.status(401).json({ message: "Unauthorized access!" });
   }
 
-  const query = "SELECT whatsapp, dob, name, city, tshirt_size, shorts_size, food_pref, stay, event1, event2, partner1, partner2 FROM users"; // ✅ Removed extra comma
+  const query = `SELECT 
+  u.*,
+
+  -- From partner_1
+  p1.event_name AS event_name_p1,
+  u_p1.name AS opponent_name_p1,
+
+  -- From partner_2
+  p2.event_name AS event_name_p2,
+  u_p2.name AS opponent_name_p2
+
+FROM users u
+
+-- Join partner_1 and opponent
+LEFT JOIN partner_1 p1 ON u.id = p1.user_id
+LEFT JOIN users u_p1 ON p1.opponent_id = u_p1.id
+
+-- Join partner_2 and opponent
+LEFT JOIN partner_2 p2 ON u.id = p2.user_id
+LEFT JOIN users u_p2 ON p2.opponent_id = u_p2.id;
+`; // ✅ Removed extra comma
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).json({ message: "Database error!" });
@@ -245,6 +348,105 @@ app.get("/admin/users", (req, res) => {
     res.json(results); // Send user data to frontend
   });
 });
+
+function upddateUser(queueData) {
+
+  const mergedData = Object.assign({}, ...queueData);
+console.log('mergedData',mergedData);
+
+  const updateUserQuery = `
+      UPDATE users SET 
+          name = ?, 
+          whatsapp = ?, 
+          dob = ?, 
+          city = ?, 
+          tshirt_size = ?, 
+          shorts_size = ?, 
+          food_pref = ?, 
+          stay = ?, 
+          event1 = ?, 
+          partner1 = ?, 
+          event2 = ?, 
+          partner2 = ? 
+      WHERE id = ?
+  `;
+
+  const userValues = [
+      mergedData.name,
+      mergedData.whatsapp,
+      mergedData.dob,
+      mergedData.city,
+      mergedData.tshirt_size,
+      mergedData.shorts_size,
+      mergedData.food_pref,
+      mergedData.stay,
+      mergedData.event1,
+      mergedData.partner1,
+      mergedData.event2,
+      mergedData.partner2,
+      mergedData.user_id
+  ];
+
+  return new Promise((resolve, reject) => {
+      db.query(updateUserQuery, userValues, (err) => {
+          if (err) {
+              console.error("Error updating user:", err);
+              return reject(false);
+          }
+console.log('1');
+
+          // Delete Partner_1
+          db.query(`DELETE FROM Partner_1 WHERE user_id = ?`, [mergedData.user_id], (err2) => {
+              if (err2) {
+                  console.error("Error deleting Partner_1:", err2);
+                  return reject(false);
+              }
+              console.log('2');
+
+              // Delete Partner_2
+              db.query(`DELETE FROM Partner_2 WHERE user_id = ?`, [mergedData.user_id], (err3) => {
+                  if (err3) {
+                      console.error("Error deleting Partner_2:", err3);
+                      return reject(false);
+                  }
+              console.log('4');
+
+
+                  // Insert new Partner_1
+                  const insertP1 = `
+                      INSERT INTO Partner_1 (user_id, opponent_id, event_name)
+                      VALUES (?, ?, ?)
+                  `;
+                  db.query(insertP1, [mergedData.user_id, mergedData.partner1, mergedData.event1], (err4) => {
+                      if (err4) {
+                          console.error("Error inserting Partner_1:", err4);
+                          return reject(false);
+                      }
+
+              console.log('5');
+
+                      // Insert new Partner_2
+                      const insertP2 = `
+                          INSERT INTO Partner_2 (user_id, opponent_id, event_name)
+                          VALUES (?, ?, ?)
+                      `;
+                      db.query(insertP2, [mergedData.user_id, mergedData.partner2, mergedData.event2], (err5) => {
+                          if (err5) {
+                              console.error("Error inserting Partner_2:", err5);
+                              return reject(false);
+                          }
+              console.log('6');
+
+
+                          resolve(true);
+                      });
+                  });
+              });
+          });
+      });
+  });
+}
+
 
 
 

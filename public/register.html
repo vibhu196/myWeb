@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,7 +53,8 @@
             color: #a14f77;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -62,7 +64,8 @@
             outline: none;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             border-color: #eb4817;
         }
 
@@ -93,64 +96,99 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Registration Page - Step 1</h2>
-    <p>Please enter your details below to proceed:</p>
-    <form  method="post" action="/queue/info">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" placeholder="Enter your full name"   >
+    <div class="container">
+        <h2>Registration Page - Step 1</h2>
+        <p>Please enter your details below to proceed:</p>
+        <form method="post" action="/queue/info">
+            <input type="hidden" id="user_id" name="user_id" value="">
 
-        <label for="whatsapp">WhatsApp Number:</label>
-        <input type="text" id="whatsapp" name="whatsapp" placeholder="Enter your WhatsApp number"   >
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name">
 
-        <label for="dob">Date of Birth:</label>
-        <input type="date" id="dob" name="dob"   >
+            <label for="whatsapp">WhatsApp Number:</label>
+            <input type="text" id="whatsapp" name="whatsapp" placeholder="Enter your WhatsApp number">
 
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" placeholder="Enter your city"   >
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob">
 
-        <label for="tshirt_size">T-Shirt Size:</label>
-        <select id="tshirt_size" name="tshirt_size">
-            <option value="">Select size</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-            <option value="XXL">XXL</option>
-        </select>
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" placeholder="Enter your city">
 
-        <label for="shorts_size">Shorts Size:</label>
-        <select id="shorts_size" name="shorts_size">
-            <option value="">Select size</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-            <option value="XXL">XXL</option>
-        </select>
+            <label for="tshirt_size">T-Shirt Size:</label>
+            <select id="tshirt_size" name="tshirt_size">
+                <option value="">Select size</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+            </select>
 
-        <label for="food_pref">Food Preference:</label>
-        <select id="food_pref" name="food_pref">
-            <option value="">Select preference</option>
-            <option value="Vegetarian">Vegetarian</option>
-            <option value="Non-Vegetarian">Non-Vegetarian</option>
-            <option value="Vegan">Vegan</option>
-        </select>
+            <label for="shorts_size">Shorts Size:</label>
+            <select id="shorts_size" name="shorts_size">
+                <option value="">Select size</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+            </select>
 
-        <label for="stay">Stay   :</label>
-        <select id="stay" name="stay">
-            <option value="">Select option</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select>
+            <label for="food_pref">Food Preference:</label>
+            <select id="food_pref" name="food_pref">
+                <option value="">Select preference</option>
+                <option value="Vegetarian">Vegetarian</option>
+                <option value="Non-Vegetarian">Non-Vegetarian</option>
+                <!-- <option value="Vegan">Vegan</option> -->
+            </select>
 
-        <!-- <button class="next-btn" onclick="window.location.href='registration2.html'">Next</button>/ -->
-        <button class="next-btn" >Next</button>
+            <label for="stay">Stay :</label>
+            <select id="stay" name="stay">
+                <option value="">Select option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
 
-    </form>
-</div>
+            <!-- <button class="next-btn" onclick="window.location.href='registration2.html'">Next</button>/ -->
+            <button class="next-btn">Next</button>
+
+        </form>
+    </div>
 
 </body>
+
 </html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get("id");
+
+        if (userId) {
+            fetch(`/edit-profile/${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    const user = data.user;
+                    document.getElementById('user_id').value = userId;
+                    document.getElementById('name').value = user.name || '';
+                    document.getElementById('whatsapp').value = user.whatsapp || '';
+                    document.getElementById('dob').value = user.dob ? formatDateToLocalYYYYMMDD(user.dob) : '';
+                    document.getElementById('city').value = user.city || '';
+                    document.getElementById('tshirt_size').value = user.tshirt_size || '';
+                    document.getElementById('shorts_size').value = user.shorts_size || '';
+                    document.getElementById('food_pref').value = user.food_pref || '';
+                    document.getElementById('stay').value = user.stay || '';
+                });
+        }
+        function formatDateToLocalYYYYMMDD(dateStr) {
+            const date = new Date(dateStr);
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+    });
+
+
+</script>
