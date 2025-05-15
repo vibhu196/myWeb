@@ -349,6 +349,47 @@ LEFT JOIN users u_p2 ON p2.opponent_id = u_p2.id;
   });
 });
 
+
+app.get('/api/clear-database', (req, res) => {
+  // List all tables to clear except `admins`
+  const tablesToClear = ['users', 'Partner_1', 'Partner_2'];
+  
+  // Use a transaction to ensure all deletions happen atomically
+  db.beginTransaction(err => {
+    if (err) {
+      console.error('Transaction error:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    const deletePromises = tablesToClear.map(table => {
+      return new Promise((resolve, reject) => {
+        db.query(`DELETE FROM ${table}`, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    });
+
+    Promise.all(deletePromises)
+      .then(() => {
+        db.commit(err => {
+          if (err) {
+            return db.rollback(() => {
+              console.error('Commit error:', err);
+              res.status(500).json({ message: 'Database commit error' });
+            });
+          }
+          res.json({ message: 'Database cleared except admins table' });
+        });
+      })
+      .catch(err => {
+        db.rollback(() => {
+          console.error('Error clearing tables:', err);
+          res.status(500).json({ message: 'Error clearing tables' });
+        });
+      });
+  });
+});
 function upddateUser(queueData) {
 
   const mergedData = Object.assign({}, ...queueData);
