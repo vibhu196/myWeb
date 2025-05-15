@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = 8000;
 const mysql = require("mysql2");
 const { log } = require('console');
 const session = require('express-session');
@@ -23,8 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
-  database: "my_games"
+  password: "Djpmtw@123!",
+  database: "myapp"
 });
 
 db.connect((err) => {
@@ -258,7 +258,7 @@ app.get("/user/dashboard",  (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0', () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 app.get("/get-error-message", (req, res) => {
