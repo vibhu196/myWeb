@@ -104,7 +104,7 @@
                         <td>${index + 1}</td>
                         <td>${user.name}</td>
                         <td>${user.whatsapp}</td>
-                        <td>${user.dob}</td>
+                        <td>${new Date(user.dob).toLocaleDateString()}</td>
                         <td>${user.city}</td>
                         <td>${user.food_pref}</td>
                         <td>${user.shorts_size}</td>

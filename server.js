@@ -232,8 +232,8 @@ app.get("/edit-profile/:id", (req, res) => {
 
   const sql = `
     SELECT u.*,p1.user_id as p1_user , p1.event_name as p1_event ,p1.opponent_id as p1_opponent_id , p2.opponent_id as p2_opponent_id , p2.event_name as p2_event , p2.user_id as p2_user_id FROM users u
-    LEFT JOIN partner_1 p1 ON p1.user_id = u.id
-    LEFT JOIN partner_2 p2 ON p2.user_id = u.id
+    LEFT JOIN Partner_1 p1 ON p1.user_id = u.id
+    LEFT JOIN Partner_2 p2 ON p2.user_id = u.id
     WHERE u.id = ?`;
 
   db.query(sql, [userId], (err, results) => {
