@@ -322,23 +322,18 @@ app.get("/admin/users", (req, res) => {
 
   const query = `SELECT 
   u.*,
-
-  -- From partner_1
   p1.event_name AS event_name_p1,
   u_p1.name AS opponent_name_p1,
 
-  -- From partner_2
   p2.event_name AS event_name_p2,
   u_p2.name AS opponent_name_p2
 
 FROM users u
 
--- Join partner_1 and opponent
-LEFT JOIN partner_1 p1 ON u.id = p1.user_id
+LEFT JOIN Partner_1 p1 ON u.id = p1.user_id
 LEFT JOIN users u_p1 ON p1.opponent_id = u_p1.id
 
--- Join partner_2 and opponent
-LEFT JOIN partner_2 p2 ON u.id = p2.user_id
+LEFT JOIN Partner_2 p2 ON u.id = p2.user_id
 LEFT JOIN users u_p2 ON p2.opponent_id = u_p2.id;
 `; // ✅ Removed extra comma
   db.query(query, (err, results) => {
